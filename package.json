@@ -1,0 +1,15 @@
+{
+    "id": "cn-progressbar",
+    "displayName": "纯css3圆形进度条",
+    "version": "1.1",
+    "description": "纯css3圆形进度条,简单",
+    "keywords": [
+        "进度条"
+    ],
+    "dcloudext": {
+        "category": [
+            "前端组件",
+            "通用组件"
+        ]
+    }
+}

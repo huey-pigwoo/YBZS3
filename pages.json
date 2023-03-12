@@ -1,0 +1,336 @@
+{
+	"pages": [{
+			"path": "pages/guide/index",
+			"style": {
+				"navigationBarTitleText": ""
+			}
+		}, {
+			"path": "pages/overview/species/index",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom"
+			}
+		}, {
+			"path": "pages/overview/bis/index",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom"
+			}
+		}, {
+			"path": "pages/overview/enterprise/index",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom"
+			}
+		}, {
+			"path": "pages/standingbook/species/specieslist",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom"
+			}
+		}, {
+			"path": "pages/standingbook/species/speciesdetail",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom"
+			}
+		}, {
+			"path": "pages/standingbook/species/enterprisedetail",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom"
+			}
+		}, {
+			"path": "pages/standingbook/species/enterpriselist",
+			"style": {
+				"navigationBarTitleText": "企业列表",
+				"navigationBarTextStyle": "white",
+				"navigationBarBackgroundColor": "#3D71E7"
+			}
+		}, {
+			"path": "pages/standingbook/bis/bislist",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom"
+			}
+		}, {
+			"path": "pages/standingbook/bis/bisdetail",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom"
+			}
+		}, {
+			"path": "pages/standingbook/bis/animallist",
+			"style": {
+				"navigationBarTitleText": "物种列表",
+				"navigationBarTextStyle": "white",
+				"navigationBarBackgroundColor": "#3D71E7"
+			}
+		}, {
+			"path": "pages/standingbook/bis/enterpriselist",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom"
+			}
+		}, {
+			"path": "pages/standingbook/enterprise/enterpriselist",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom"
+			}
+		}, {
+			"path": "pages/standingbook/enterprise/bislist",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom"
+			}
+		}, {
+			"path": "pages/standingbook/enterprise/specieslist",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom"
+			}
+		}, {
+			"path": "pages/standingbook/enterprise/enterprisedetail",
+			"style": {
+				"navigationBarTitleText": "企业详情",
+				"navigationBarTextStyle": "white",
+				"navigationBarBackgroundColor": "#3D71E7"
+			}
+		}, {
+			"path": "pages/business/registerCompany",
+			"style": {
+				"navigationBarTitleText": "登记单位",
+				"navigationBarTextStyle": "white",
+				"navigationBarBackgroundColor": "#3D71E7"
+			}
+		}, {
+			"path": "pages/user/addauthorization",
+			"style": {
+				"navigationBarTitleText": "授权管理"
+			}
+		}, {
+			"path": "pages/user/deptmanage",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationBarTextStyle": "white",
+				"navigationBarBackgroundColor": "#3D71E7"
+			}
+		}, {
+			"path": "pages/user/rolemanage",
+			"style": {
+				"navigationBarTitleText": "人员管理",
+				"navigationBarTextStyle": "white",
+				"navigationBarBackgroundColor": "#3D71E7"
+			}
+		}, {
+			"path": "pages/business/chooseCompany",
+			"style": {
+				"navigationBarTitleText": "选择单位",
+				"navigationBarTextStyle": "white",
+				"navigationBarBackgroundColor": "#3D71E7"
+			}
+		}, {
+			"path": "pages/user/identity",
+			"style": {
+				"navigationBarTitleText": "身份管理",
+				"navigationBarBackgroundColor": "#3D71E7",
+				"navigationBarTextStyle": "white"
+			}
+		}, {
+			"path": "pages/user/roleedit",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationBarBackgroundColor": "#3D71E7",
+				"navigationBarTextStyle": "white"
+			}
+		}, {
+			"path": "pages/user/index",
+			"style": {
+				"navigationBarTitleText": "个人中心",
+				"navigationBarBackgroundColor": "#3D71E7",
+				"navigationBarTextStyle": "white"
+			}
+		}, {
+			"path": "pages/user/qualifications",
+			"style": {
+				"navigationBarTitleText": "资质证明管理",
+				"navigationBarBackgroundColor": "#3D71E7",
+				"navigationBarTextStyle": "white"
+			}
+		}, {
+			"path": "pages/user/changerole",
+			"style": {
+				"navigationBarTitleText": "个人信息",
+				"navigationBarBackgroundColor": "#3D71E7",
+				"navigationBarTextStyle": "white"
+			}
+		}, {
+			"path": "pages/business/overview",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom"
+			}
+		}, {
+			"path": "pages/businessform/quarantine",
+			"style": {
+				"navigationBarTitleText": "检疫登记",
+				"navigationBarTextStyle": "white",
+				"navigationBarBackgroundColor": "#3D71E7"
+			}
+		}, {
+			"path": "pages/businessform/rescue",
+			"style": {
+				"navigationBarTitleText": "救助登记",
+				"navigationBarTextStyle": "white",
+				"navigationBarBackgroundColor": "#3D71E7"
+			}
+		}, {
+			"path": "pages/businessform/breed",
+			"style": {
+				"navigationBarTitleText": "繁育登记",
+				"navigationBarTextStyle": "white",
+				"navigationBarBackgroundColor": "#3D71E7"
+			}
+		}, {
+			"path": "pages/businessform/death",
+			"style": {
+				"navigationBarTitleText": "死亡登记",
+				"navigationBarTextStyle": "white",
+				"navigationBarBackgroundColor": "#3D71E7"
+			}
+		}, {
+			"path": "pages/businessform/release",
+			"style": {
+				"navigationBarTitleText": "放归申请",
+				"navigationBarTextStyle": "white",
+				"navigationBarBackgroundColor": "#3D71E7"
+			}
+		}, {
+			"path": "pages/businessform/transfer",
+			"style": {
+				"navigationBarTitleText": "移交登记",
+				"navigationBarTextStyle": "white",
+				"navigationBarBackgroundColor": "#3D71E7"
+			}
+		}, {
+			"path": "pages/businessform/sale",
+			"style": {
+				"navigationBarTitleText": "销售登记",
+				"navigationBarTextStyle": "white",
+				"navigationBarBackgroundColor": "#3D71E7"
+			}
+		}, {
+			"path": "pages/businessform/death_fanyu",
+			"style": {
+				"navigationBarTitleText": "死亡登记",
+				"navigationBarTextStyle": "white",
+				"navigationBarBackgroundColor": "#3D71E7"
+			}
+		}, {
+			"path": "pages/businessform/introduction",
+			"style": {
+				"navigationBarTitleText": "引进登记",
+				"navigationBarTextStyle": "white",
+				"navigationBarBackgroundColor": "#3D71E7"
+			}
+		}, {
+			"path": "pages/businessform/breed_fanyu",
+			"style": {
+				"navigationBarTitleText": "繁殖登记",
+				"navigationBarTextStyle": "white",
+				"navigationBarBackgroundColor": "#3D71E7"
+			}
+		}, {
+			"path": "pages/businessform/escape",
+			"style": {
+				"navigationBarTitleText": "逃逸登记",
+				"navigationBarTextStyle": "white",
+				"navigationBarBackgroundColor": "#3D71E7"
+			}
+		}, {
+			"path": "pages/businessform/detail",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationBarTextStyle": "white",
+				"navigationBarBackgroundColor": "#3D71E7"
+			}
+		}, {
+			"path": "pages/business/confirmCompany",
+			"style": {
+				"navigationBarTitleText": "加入单位",
+				"navigationBarTextStyle": "white",
+				"navigationBarBackgroundColor": "#3D71E7"
+			}
+		}, {
+			"path": "pages/home/index",
+			"style": {
+				"navigationBarTitleText": "首页"
+			}
+		}, {
+			"path": "pages/home/authorization",
+			"style": {
+				"navigationBarTitleText": ""
+			}
+		}, {
+			"path": "pages/login/login",
+			"style": {
+				"navigationBarTitleText": "登录"
+			}
+		}, {
+			"path": "pages/generalform/index",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationBarTextStyle": "white",
+				"navigationBarBackgroundColor": "#3D71E7"
+			}
+		}, {
+			"path": "pages/generalform/media",
+			"style": {
+				"navigationBarTitleText": "编辑影像"
+			}
+		}, {
+			"path": "pages/business/record",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationBarTextStyle": "white",
+				"navigationBarBackgroundColor": "#3D71E7"
+			}
+		}, {
+			"path": "pages/business/codelist",
+			"style": {
+				"navigationBarTitleText": "选择动物",
+				"navigationBarTextStyle": "white",
+				"navigationBarBackgroundColor": "#3D71E7"
+			}
+		},
+		{
+			"path": "pages/business/examine",
+			"style": {
+				"navigationBarTitleText": "审核列表",
+				"navigationBarTextStyle": "white",
+				"navigationBarBackgroundColor": "#3D71E7"
+			}
+		}, {
+			"path": "pages/business/examinedetail",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationBarTextStyle": "white",
+				"navigationBarBackgroundColor": "#3D71E7"
+			}
+		},
+		{
+			"path": "pages/generalform/detail",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationBarTextStyle": "white",
+				"navigationBarBackgroundColor": "#3D71E7"
+			}
+		}
+	],
+	"globalStyle": {
+		"navigationBarBackgroundColor": "#ffffff",
+		"navigationBarTextStyle": "black"
+	},
+	"uniIdRouter": {}
+}
