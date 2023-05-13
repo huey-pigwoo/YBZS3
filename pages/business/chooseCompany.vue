@@ -28,23 +28,22 @@
 		</view>
 		<view class="list" v-if="list.length">
 			<view @click="itemclick(item)" v-for="(item,index) in list" :key="index" class="list-item">
-				<view class="main-text flex-align-center">
-					<view>
-						{{item.companyname||''}}
-					</view>
-					<view v-if="item.deptname" style="margin-left: 20rpx;">
-						{{item.deptname}}
-					</view>
+				<view class="left">
+					<image :src="item.pic" mode="" ></image>
+					<!-- <image src="/static/imgs/title-icon.png" mode="" ></image> -->
 				</view>
-				<view class="sub-text" style="margin-top: 10rpx;">
-					{{item.orgname||''}}
-				</view>
-				<view class="flex-between-center" style="margin-top: 10rpx;">
-					<view class="sub-text maxwidth_500">
-						{{item.address||''}}
-					</view>
-					<view class="sub-text">
-						{{item.tel||''}}
+				<view class="right">
+					<view class="f1">{{item.f1}}</view>
+					<view class="f2">{{item.f2}}</view>
+					<Tag
+						v-for="(it) in item.f3" 
+						:key="it.key"
+						:status="it.key" 
+						:value="it.value" 
+					/>
+					<view class="f4-group">
+						<view class="f4">{{item.f4[0].value}}</view>
+						<view class="f4">业务：{{item.f4[1].value}}</view>
 					</view>
 				</view>
 			</view>
@@ -57,23 +56,29 @@
 	import {
 		getAddCompanyInfo
 	} from "@/config/api.js"
+	import {
+		chooseCompany
+	} from "@/config/services.js"
+	import Tag from '@/components/Tag';
 	import bottomline from '@/components/bottomline';
 	import addresspicker from '@/components/pick-address/index.vue';
+	// import addressPicker from '@/components/addressPicker/addressPicker.vue';
+	
 	export default {
 		data() {
 			return {
 				tablist: [{
 					name: '驯养繁殖',
-					formid: '161068947577124'
+					formid: 'DOMESTICATION_BREED'
 				}, {
 					name: "收容救助",
-					formid: '163713368101275'
+					formid: 'CONTAINMENT_ASSISTANCE'
 				}, {
 					name: '专委会',
-					formid: '10001'
+					formid: 'EXECUTIVE_BRANCH'
 				}, {
 					name: '行政部门',
-					formid: '10002'
+					formid: 'SPECIAL_COMMITTEE'
 				}, ],
 				tab_idx: 0,
 				pageindex: 1,
@@ -92,7 +97,8 @@
 		},
 		components: {
 			bottomline,
-			addresspicker
+			addresspicker,
+			Tag
 		},
 		onShow() {
 			this.getlist('refresh')
@@ -122,10 +128,9 @@
 				}
 			},
 			//点击选择
-			itemclick(data) {
+			itemclick(data) {				
 				uni.navigateTo({
-					url: '/pages/business/confirmCompany?data=' + encodeURIComponent(JSON.stringify(data)) +
-						'&formid=' + this.formid
+					url: `/pages/business/confirmCompany?compantId=${data.id}`
 				})
 			},
 			handleGetRegion(data) {
@@ -144,28 +149,18 @@
 				this.tab_idx = idx
 				this.formid = this.tablist[idx].formid
 				this.getlist('refresh')
+				
+				console.log('this.tab_idx',this.formid)
 			},
 			getlist(refresh) {
 				if (refresh) {
 					this.pageindex = 1
 				}
-				getAddCompanyInfo({
-					formid: this.formid,
-					orgcode: this.orgcode,
-					pageindex: this.pageindex,
-					pagesize: this.pagesize,
-					searchkey: this.searchkey
-				}).then(res => {
-					if (res.data.code == 0) {
-						this.list = refresh ? [...res.data.data.rows] : this.list.concat([...res.data.data.rows])
-						if (this.pageindex * this.pagesize >= res.data.data.total) {
-							this.showBtLine = true;
-						} else {
-							this.showBtLine = false;
-						}
-					}
-
-				})
+				chooseCompany({address: null,type:this.formid}).then(res => {
+					console.log(res)
+					this.list = res?.data?.data?.records
+				}
+				)
 			}
 		}
 	}
@@ -246,22 +241,37 @@
 
 		.list {
 			margin-top: 220rpx;
+			
+			
+			
 
 			.list-item {
 				background: #fff;
 				border-radius: 20rpx;
-				padding: 32rpx;
+				padding: 32rpx 0;
 				margin: 0 32rpx;
 				margin-bottom: 20rpx;
-				border-bottom: 1px solid #eee;
+				display: flex;
 
-				.main-text {
-					color: #000;
+				.left {
+					width: 200rpx;
+					height: 200rpx;
+					border-radius: 10rpx;
+					border: 1px solid red;
 				}
-
-				.sub-text {
-					font-size: 22rpx;
-					color: #999;
+				.right{
+					padding-left: 20rpx;
+					
+					.f1 {
+						font-size: 32rpx;
+						font-weight: bold;
+					}
+					
+					.f2,
+					.f4 {
+						font-size: 24rpx;
+						color: rgba(154, 154, 154, 1);
+					}
 				}
 			}
 		}

@@ -70,29 +70,28 @@
 						let idx = 0
 						let address = ''
 						let curtimeformat = ''
-						getAddrAndCurTime({
-							x: _self.$store.state.location.longitude,
-							y: _self.$store.state.location.latitude
-						}).then(tes => {
-							if (tes.data.code == 0) {
-								address = tes.data.data.address
-								curtimeformat = tes.data.data.curtimeformat
-							}
-
+						// getAddrAndCurTime({
+						// 	x: _self.$store.state.location.longitude,
+						// 	y: _self.$store.state.location.latitude
+						// }).then(tes => {
+							// if (tes.data.code == 0) {
+							// 	address = tes.data.data.address
+							// 	curtimeformat = tes.data.data.curtimeformat
+							// }
 							if (res.type == 'video') {
 								res.tempFiles.map(item => {
 									uni.uploadFile({
-										url: uplodurl,
+										url: 'http://192.168.167.235:8080/api/oss/addBatch',
 										filePath: item.tempFilePath,
-										name: 'file',
+										name: 'files',
 										success(ses) {
 											idx += 1
 											arr.push({
 												path: JSON.parse(ses.data).data
-													.dbpath,
+													.realUrl,
 												time: Date.now(),
-												thumbTempFilePath: item
-													.thumbTempFilePath,
+												thumbTempFilePath: JSON.parse(ses.data).data
+													.realUrl, 
 												type: "video",
 												address,
 												curtimeformat
@@ -107,14 +106,24 @@
 							} else if (res.type == 'image') {
 								res.tempFiles.map(item => {
 									uni.uploadFile({
-										url: uplodurl,
+										url: 'http://192.168.167.235:8080/api/oss/addBatch',
 										filePath: item.tempFilePath,
-										name: 'file',
+										header: {
+											'content-type': 'multipart/form-data',
+											'Content-Encoding': 'UTF-8',
+											'charset':'UTF-8',
+											'withCredentials': 'false'
+										},
+									  formData: {
+										scene: 'certificate'
+										// scene: 'registration'
+									  },
+										name: 'files',
 										success(ses) {
 											idx += 1
 											arr.push({
-												path: JSON.parse(ses.data).data
-													.dbpath,
+												materialId: JSON.parse(ses.data).data[0].materialId,
+												path: JSON.parse(ses.data).data[0].realUrl,
 												time: Date.now(),
 												type: "image",
 												address,
@@ -128,7 +137,7 @@
 									});
 								});
 							}
-						})
+						// })
 					}
 				});
 			},
@@ -147,7 +156,7 @@
 			deleteimg() {
 				this.$emit("deleteimg", this.imgidx)
 				this.imgidx = 0
-			},
+			},	
 			//图片滑动
 			swiperChange(e) {
 				this.imgidx = e.detail.current

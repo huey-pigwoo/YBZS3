@@ -26,6 +26,7 @@
 <style>
 	/*每个页面公共css */
 	@import url('@/common/index.css');
+	@import url('@/static/iconfont.css');
 
 	view,
 	text {

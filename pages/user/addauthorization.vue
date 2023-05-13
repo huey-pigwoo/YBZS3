@@ -5,39 +5,47 @@
 				授予权限
 			</view>
 			<view class="field-item flex-align-center">
-				<view class="field-title-large">
+				<view class="field-title width_100">
 					<text class="field-musticon">*</text>
 					授权区域
 				</view>
-				<view class="field-value">
-					<addresspicker @onChangeAddress="changeAddress_anthor" :orgname="anthor_orgname">
-					</addresspicker>
+				<view style="background-color: #F6F6F6;padding: 10rpx;" class="field-input">
+					<addressPicker @onChangeAddress='changePermisionAddress'></addressPicker>
 				</view>
 			</view>
 			<view class="field-item flex-align-center">
-				<view class="field-title-large">
+				<view class="field-title width_100">
 					<text class="field-musticon">*</text>
 					授权时间
 				</view>
-				<view class="field-value">
-					<picker mode="date" @change="datechange('bigintime',$event)">
-						<view>{{bigintime}}</view>
-					</picker>
-				</view>
-				<text>—</text>
-				<view class="field-value">
-					<picker mode="date" @change="datechange('endtime',$event)">
-						<view>{{endtime}}</view>
-					</picker>
+				<view style="border: 1px solid #fff;padding: 10rpx 0;display: flex;" class="field-input">
+					<view class="" style="display: flex; width: 85%;">
+						<view class="field-value" style="flex: 1;margin-right: 6rpx;padding: 5rpx 10rpx">
+							<picker mode="date" @change="datechange('start',$event)">
+								<view>{{authStartTime || '开始时间'}}</view>
+							</picker>
+						</view>
+						<text>-</text>
+						<view class="field-value"  style="flex: 1;margin-right: 6rpx;padding: 5rpx 10rpx">
+							<picker mode="date" @change="datechange('end',$event)">
+								<view>{{authEndTime || '结束时间'}}</view>
+							</picker>
+						</view>
+					</view>
+					<view class="field-value" style="margin: auto">
+						<picker mode="selector" :range="gapYearRange" @change="gapYearChange">
+							<view>{{gapYear}}</view>
+						</picker>
+					</view>
 				</view>
 			</view>
 			<view class="field-item flex-align-center">
-				<view class="field-title-large">
+				<view class="field-title width_100">
 					<text class="field-musticon">*</text>
 					授权业务
 				</view>
-				<view class="field-value">
-					林业，野保
+				<view style="background-color: #F6F6F6;padding: 10rpx;" class="field-input">
+					<businessPicker  @onChangeBusiness='changePermisionBusiness'></businessPicker>
 				</view>
 			</view>
 		</view>
@@ -50,21 +58,20 @@
 					<text class="field-musticon">*</text>
 					单位
 				</view>
-				<input v-model="unitinfo.deptname" class="field-input" type="text" placeholder="请输入单位名称">
+				<input v-model="companyName" class="field-input" type="text" placeholder="请输入单位名称">
 			</view>
 			<view class="field-item flex-align-center">
 				<view class="field-title">
 					地址
 				</view>
 				<view class="field-input" style="background-color: #f6f6f6;">
-					<addresspicker @onChangeAddress="changeAddress_unit" :orgname="unit_orgname">
-					</addresspicker>
+					<addressPicker @onChangeAddress='changeCompanyAddress'></addressPicker>
 				</view>
 			</view>
 			<view class="field-item flex-align-center">
 				<view class="field-title">
 				</view>
-				<input :disabled="disabled" v-model="unitinfo.address" type="text" class="field-input"
+				<input :disabled="disabled" v-model="companyAddressPre" type="text" class="field-input"
 					placeholder="详细到街道、组、门牌号 ">
 			</view>
 			<view class="field-item flex-align-center">
@@ -72,15 +79,15 @@
 					电话
 				</view>
 				<view class="flex-align-center" style="flex: 1;">
-					<input :disabled="disabled" v-model="unitinfo.areacode" placeholder="区号" type="text"
+					<input :disabled="disabled" v-model="phoneCountryCode" placeholder="区号" type="text"
 						class="field-input" style="max-width: 100rpx;margin-right: 10rpx;">
-					<input :disabled="disabled" v-model="unitinfo.tel" placeholder="八位数座机号码" type="text"
+					<input :disabled="disabled" v-model="phoneNumber" placeholder="八位数座机号码" type="text"
 						class="field-input">
 				</view>
 			</view>
 		</view>
-		<view class="form-itemblock">
-			<view class="block-title">
+		<view class="form-itemblock" v-for="(item,index) in adminList" :key="item" >
+			<view class="block-title" >
 				管理员
 			</view>
 			<view class="flex-align-center field-item">
@@ -88,17 +95,20 @@
 					<text class="field-musticon">*</text>
 					姓名
 				</view>
-				<input :disabled="disabled" v-model="userinfo.name" placeholder="请输入姓名" class="field-input" type="text">
+				<input v-model="adminList[index].userName" placeholder="请输入姓名" class="field-input" type="text">
 			</view>
 			<view class="flex-align-center">
 				<view style="font-weight: bold;font-size: 26rpx;" class="field-title">
 					<text class="field-musticon">*</text>
 					手机
 				</view>
-				<input :disabled="disabled" v-model="userinfo.tel" placeholder="请输入管理员手机号" class="field-input"
+				<input v-model="adminList[index].phone" placeholder="请输入管理员手机号" class="field-input"
 					type="number">
 			</view>
 		</view>
+		
+		<view @click="addPerson" style="color: #3D71E7"> 点击继续添加管理员 </view>
+		
 		<view v-if="disabled" class="form-itemblock">
 			<view class="block-title">
 				审核意见
@@ -139,7 +149,12 @@
 		checkAnthority,
 		getjudgeUnit
 	} from "@/config/api.js"
+	import {
+		addPermisionCompany
+	} from '@/config/services.js'
 	import Dialog from '@/components/dialog/index.vue'
+	import addressPicker from '@/components/addressPicker/addressPicker.vue'
+	import businessPicker from '@/components/businessPicker/businessPicker.vue'
 	import addresspicker from "@/components/pick-address/index.vue"
 	export default {
 		data() {
@@ -154,13 +169,29 @@
 				detaildata: {},
 				bigintime: '开始时间',
 				endtime: '结束时间',
+				gapYearRange: [0,1,2,3,4,5,6,7,8,9],
+				gapYear: 0,
 				checkmark: '',
 				anthorityinfo: {
 					orgcode: uni.getStorageSync('orgcode')
 				},
 				unit_orgname: uni.getStorageSync('orgname'),
 				anthor_orgname: uni.getStorageSync('orgname'),
-				cansaveflg: true
+				cansaveflg: true,
+				
+				// S------------------
+					authAreaCodeList: [],	//授权区域
+					locationAreaCodeList: [], // 授权业务
+					authStartTime: '',	// 开始时间
+					authEndTime: '',	// 结束时间
+					companyTypeIdList: [],	// 公司类型
+					companyName: '',	// 公司名称
+					regionCode: [],		// 公司地址
+					companyAddressPre: '',	//公司详细地址
+					phoneCountryCode: '',	// 区号
+					phoneNumber: '',	// 电话号码
+					adminList: [{userName: '', phone: ''}],
+				// E------------------
 			}
 		},
 		onLoad(props) {
@@ -199,6 +230,27 @@
 		},
 		onShow() {},
 		methods: {
+			addPerson(){
+				this.adminList = [...this.adminList,{userName: '', phone: ''}]
+			},
+			changePermisionAddress(data) {
+				const getPermisionAddressCode = data.map(item => item.code)
+				this.authAreaCodeList =getPermisionAddressCode[2]
+				console.log('getPermisionAddressCode',this.authAreaCodeList)
+			},
+			changePermisionBusiness(data){
+				const getPermisionBusinessId = data.map(item => item.id)
+				this.locationAreaCodeList = getPermisionBusinessId[2]
+				console.log('getPermisionBusinessId',this.locationAreaCodeList)
+			},
+			changeCompanyAddress(data){
+				const getcompanyAddress = data.map(item => item.id)
+				this.regionCode = getcompanyAddress[2]
+				console.log('this.regionCode',this.regionCode)
+			},
+			gapYearChange(e){
+				this.gapYear = e.detail.value
+			},
 			//判断单位是否重复
 			judge() {
 				let bisid = ''
@@ -223,16 +275,12 @@
 					}
 				})
 			},
-			changeAddress_anthor(name, code) {
-				this.$set(this.anthorityinfo, "orgcode", code)
-			},
-			changeAddress_unit(name, code) {
-				this.$set(this.unitinfo, "orgcode", code)
-			},
+			
 			datechange(state, e) {
-				this.$set(this.anthorityinfo, state, e.detail.value)
-				this[state] = e.detail.value
+				if(state === 'start') this.authStartTime = e.detail.value
+				else this.authEndTime = e.detail.value
 			},
+			
 			//审核
 			examine() {
 				checkAnthority({
@@ -285,7 +333,8 @@
 				})
 			},
 			//确认加入
-			save() {
+			save() {				
+	// ------------------------- ??? -----------------------------------------			
 				// if (!this.cansaveflg) {
 				// 	uni.showToast({
 				// 		title: "添加的单位已经存在",
@@ -293,37 +342,68 @@
 				// 	})
 				// 	return
 				// }
-				addAnthorityManagge({
-					flg: this.flg,
-					anthorityinfo: this.anthorityinfo,
-					unitinfo: this.unitinfo,
-					userinfo: this.userinfo
-				}).then(res => {
-					if (res.data.code == 0) {
-						uni.showToast({
-							title: '提交成功'
-						})
-						setTimeout(() => {
-							uni.navigateTo({
-								url: '/pages/home/index'
+	// ------------------------- ??? -----------------------------------------	
+	
+		//	------------------------- S -----------------------------------------	
+			const requestParams = {
+				authAreaCodeList: this.authAreaCodeList,	//授权区域
+				locationAreaCodeList: this.locationAreaCodeList, // 授权业务
+				authStartTime: this.authStartTime,	// 开始时间
+				authEndTime: this.authEndTime,	// 结束时间
+				companyTypeIdList: this.companyTypeIdList,	// 公司类型
+				companyName: this.companyName,	// 公司名称
+				regionCode: this.regionCode,		// 公司地址
+				companyAddressPre: this.companyAddressPre,	//公司详细地址
+				phoneCountryCode: this.phoneCountryCode,	// 区号
+				phoneNumber: this.phoneNumber,	//x 电话号码
+				adminList: this.adminList,
+			}
+				addPermisionCompany('AddByApply',requestParams)
+					.then(res => {
+						if (res.data.code == 0) {
+							uni.showToast({
+								title: '提交成功'
 							})
-						}, 2000)
-					}
-				})
-			},
-			checkclick(idx) {
-				this.bisinfo[idx].selectflg = !this.bisinfo[idx].selectflg
+							setTimeout(() => {
+								uni.navigateBack()
+							}, 2000)
+						}
+					})
+				
+		//	------------------------- S -----------------------------------------	
+				// addAnthorityManagge({
+				// 	flg: this.flg,
+				// 	anthorityinfo: this.anthorityinfo,
+				// 	unitinfo: this.unitinfo,
+				// 	userinfo: this.userinfo
+				// }).then(res => {
+				// 	if (res.data.code == 0) {
+				// 		uni.showToast({
+				// 			title: '提交成功'
+				// 		})
+				// 		setTimeout(() => {
+				// 			uni.navigateTo({
+				// 				url: '/pages/home/index'
+				// 			})
+				// 		}, 2000)
+				// 	}
+				// })
 			},
 		}
 	}
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 	page {
 		background: #f5f5f5;
 	}
+	
+	.width_100 {
+		width: 100rpx !important;
+	}
 
 	.registerCompany {
+		background-color: #EFEFEF;
 		.field-title {
 			white-space: nowrap;
 			width: 60rpx;
@@ -366,3 +446,4 @@
 		}
 	}
 </style>
+this.

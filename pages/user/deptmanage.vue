@@ -7,7 +7,7 @@
 						授权范围
 					</view>
 					<view class="head_value flex-align-center">
-						<addresspicker :orgname='orgname' @onChangeAddress='changeAddress'></addresspicker>
+						<addressPicker @onChangeAddress='changePermisionAddress'></addressPicker>
 						<image style="width: 28rpx;height: 11rpx;margin-left: 10rpx;"
 							src="../../static/imgs/Polygon2.png"></image>
 						<!-- {{orgname}} -->
@@ -18,14 +18,12 @@
 						授权业务
 					</view>
 					<view class="head_value flex-align-center">
-						{{bisname}}
-						<image style="width: 28rpx;height: 11rpx;margin-left: 10rpx;"
-							src="../../static/imgs/Polygon2.png"></image>
+						<businessPicker  @onChangeBusiness='changePermisionBusiness'></businessPicker>
 					</view>
 				</view>
 			</view>
 			<view class="flex-between-center">
-				<view @click="addclick" class="" style="color: #3d71e7;">
+				<view @click="addclick('check')" class="" style="color: #3d71e7;">
 					点击添加新的授权单位
 				</view>
 				<view class="">
@@ -38,6 +36,9 @@
 				<cardmanage @click='itemclick(item)' :data='item'></cardmanage>
 			</view>
 		</view>
+		<view class="list">
+			<pureList :listData="businessList" type="check"></pureList>
+		</view>
 		<bottomline v-if="showBtLine && datalist.length > 4"></bottomline>
 	</view>
 </template>
@@ -47,6 +48,9 @@
 		getunitManage,
 		getanthorityManage
 	} from '@/config/api.js'
+	import {
+		getCompanyManageList
+	} from '@/config/services.js'
 	import cardmanage from '@/components/listcard/card_manage.vue'
 	import bottomline from '@/components/bottomline';
 	import addresspicker from '@/components/pick-address/index.vue'
@@ -60,7 +64,8 @@
 				bisname: '林业，野保',
 				orgname: uni.getStorageSync('orgname'),
 				classify: '',
-				orgcode: ''
+				orgcode: '',
+				businessList:[],
 			}
 		},
 		onLoad(props) {
@@ -85,17 +90,24 @@
 			this.getlist();
 		},
 		methods: {
+			changePermisionAddress(data) {
+				const getPermisionAddressCode = data.map(item => item.code)
+				this.authAreaCodeList =getPermisionAddressCode[2]
+				console.log('getPermisionAddressCode',this.authAreaCodeList)
+			},
+			changePermisionBusiness(data){
+				const getPermisionBusinessId = data.map(item => item.id)
+				this.locationAreaCodeList = getPermisionBusinessId[2]
+				console.log('getPermisionBusinessId',this.locationAreaCodeList)
+			},
 			changeAddress(orgname, orgcode) {
 				this.orgcode = orgcode
 				this.getlist('refresh')
 			},
-			addclick() {
+			addclick(type) {
 				let url = ''
-				if (this.navtitle.includes('授权')) {
-					url = `/pages/user/addauthorization?flg=1`
-				} else {
-					url = `/pages/business/registerCompany?flg=1`
-				}
+				if(type == 'check'){ url = `/pages/user/addauthorization?flg=1`}
+				else {url = `/pages/business/registerCompany?flg=1`}
 				const _self = this
 				uni.navigateTo({
 					url,
@@ -113,67 +125,77 @@
 				if (data.stateid == 2) {
 					checkflg = true
 				}
-				if (this.navtitle.includes('授权')) {
-					url =
-						`/pages/user/addauthorization?flg=1&data=${encodeURIComponent(JSON.stringify(data))}&checkflg=${checkflg}&editflg=true`
-				} else {
-					url =
-						`/pages/business/registerCompany?flg=1&data=${encodeURIComponent(JSON.stringify(data))}&checkflg=${checkflg}&editflg=true`
-				}
+				// if (this.navtitle.includes('授权')) {
+				// 	url =
+				// 		`/pages/user/addauthorization?flg=1&data=${encodeURIComponent(JSON.stringify(data))}&checkflg=${checkflg}&editflg=true`
+				// } else {
+				// 	url =
+				// 		`/pages/business/registerCompany?flg=1&data=${encodeURIComponent(JSON.stringify(data))}&checkflg=${checkflg}&editflg=true`
+				// }
 				uni.navigateTo({
-					url,
+					url: '/pages/user/addauthorization',
 					events: {
 						refresh() {
 							_self.getlist('refresh')
 						}
 					}
 				})
+				// uni.navigateTo({
+				// 	url,
+				// 	events: {
+				// 		refresh() {
+				// 			_self.getlist('refresh')
+				// 		}
+				// 	}
+				// })
 			},
 			getlist(refresh) {
 				if (refresh) {
 					this.pageindex = refresh ? 1 : this.pageindex
 				}
-				if (this.navtitle.includes('单位')) {
-
-
-					getunitManage({
-						orgcode: this.orgcode,
-						pageindex: this.pageindex,
-						pagesize: this.pagesize
-					}).then(res => {
-						if (res.data.code == 0) {
-							if (refresh) {
-								this.datalist = [...res.data.data.rows]
-							} else {
-								this.datalist = this.datalist.concat([...res.data.data.rows])
-							}
-							if (this.pageindex * this.pagesize >= res.data.data.total) {
-								this.showBtLine = true
-							} else {
-								this.showBtLine = false
-							}
-						}
-					})
-				} else {
-					getanthorityManage({
-						orgcode: this.orgcode,
-						pageindex: this.pageindex,
-						pagesize: this.pagesize
-					}).then(res => {
-						if (res.data.code == 0) {
-							if (refresh) {
-								this.datalist = [...res.data.data.rows]
-							} else {
-								this.datalist = this.datalist.concat([...res.data.data.rows])
-							}
-							if (this.pageindex * this.pagesize >= res.data.data.total) {
-								this.showBtLine = true
-							} else {
-								this.showBtLine = false
-							}
-						}
-					})
-				}
+				getCompanyManageList().then(res => {
+					console.log('获取到的公司',res.data)
+					this.businessList = res.data.data.records
+				})
+				// if (this.navtitle.includes('单位')) {
+				// 	getunitManage({
+				// 		orgcode: this.orgcode,
+				// 		pageindex: this.pageindex,
+				// 		pagesize: this.pagesize
+				// 	}).then(res => {
+				// 		if (res.data.code == 0) {
+				// 			if (refresh) {
+				// 				this.datalist = [...res.data.data.rows]
+				// 			} else {
+				// 				this.datalist = this.datalist.concat([...res.data.data.rows])
+				// 			}
+				// 			if (this.pageindex * this.pagesize >= res.data.data.total) {
+				// 				this.showBtLine = true
+				// 			} else {
+				// 				this.showBtLine = false
+				// 			}
+				// 		}
+				// 	})
+				// } else {
+				// 	getanthorityManage({
+				// 		orgcode: this.orgcode,
+				// 		pageindex: this.pageindex,
+				// 		pagesize: this.pagesize
+				// 	}).then(res => {
+				// 		if (res.data.code == 0) {
+				// 			if (refresh) {
+				// 				this.datalist = [...res.data.data.rows]
+				// 			} else {
+				// 				this.datalist = this.datalist.concat([...res.data.data.rows])
+				// 			}
+				// 			if (this.pageindex * this.pagesize >= res.data.data.total) {
+				// 				this.showBtLine = true
+				// 			} else {
+				// 				this.showBtLine = false
+				// 			}
+				// 		}
+				// 	})
+				// }
 			}
 		}
 	}

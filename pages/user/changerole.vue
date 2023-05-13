@@ -1,5 +1,16 @@
+
 <template>
 	<view class="changerole">
+		<view class="form-itemblock changerole-box">
+			<view class="block-title">
+				个人照片
+			</view>
+			<view style="position: relative;width: 100%;">
+				<makemedia @deleteimg='deleteimg()' @swiperclick='swiperclick()' :imgidx='imgidx' @getchoose="getimg"
+					:imglist='imglist'>
+				</makemedia>
+			</view>
+		</view>
 		<view class="changerole-box">
 			<view class="changerole-item flex-align-center">
 				<view class="field-title">
@@ -39,16 +50,47 @@
 		updateRegistInfo,
 		getSmsCode
 	} from '@/config/api.js'
+	import {
+		getPersonBaseInfo
+	} from '@/config/services.js'
+	import makemedia from "@/components/makemedia/index.vue"
 	export default {
 		data() {
 			return {
 				name: uni.getStorageSync('name') || '',
 				tel: uni.getStorageSync('tel') || '',
 				smscode: '',
-				codetxt: '获取验证码'
+				codetxt: '获取验证码',
+				imglist: [],
+				imgidx: 0,
 			}
 		},
+		components: {
+			makemedia
+		},
+		onShow(){
+			getPersonBaseInfo().then(
+				res => {
+					console.log('获取个人详情',res.data.data.material.realUrl)
+					this.name = res.data.data.username
+					this.imglist = [res.data.data.material.realUrl]
+				}
+			)
+		},
 		methods: {
+			deleteimg(imgidx) {
+				this.imglist.splice(imgidx, 1)
+			},
+			//获取上传的图片
+			getimg(data) {
+				this.imglist = this.imglist.concat(data)
+			},
+			checkForm(){
+				console.log(this.list)
+			},
+			cancel() {
+				uni.navigateBack()
+			},
 			save() {
 				if (!this.name && !this.tel) {
 					uni.showToast({

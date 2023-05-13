@@ -1,7 +1,7 @@
-import request from './http.js'
+import request from './https.js'
 import {
 	URL
-} from './http.js'
+} from './https.js'
 export const uplodurl = URL + "/sjcl/ly/file/uploadFile.lt"
 //登录
 export const login = (data) => {
@@ -68,6 +68,7 @@ export const saveYijiaoQueren = (data) => {
 export const getWorkTotal = (data) => {
 	return request('/xmcygl/ly/wxminiform/getWorkTotal.lt', 'GET', data)
 }
+
 //获取手机号
 export const getWxminiTel = (data) => {
 	return request('/xmcygl/ly/wxuser/getWxminiTel.lt', 'GET', data)
@@ -253,7 +254,7 @@ export const getwuZhongList = async (data) => {
 export const getBisList = async (data) => {
 	return request('/xmcygl/ly/wxminicompany/getBisList.lt', 'GET', data)
 }
-//企业物种列表
+//企业物种列表\
 export const getWuZhongInfoList = async (data) => {
 	return request('/xmcygl/ly/wxminicompany/getWuZhongInfoList.lt', 'GET', data)
 }

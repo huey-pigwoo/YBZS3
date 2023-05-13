@@ -4,17 +4,26 @@
 			<view class="block-title">
 				单位信息
 			</view>
-			<view style="font-size: 26rpx;">
-				{{companydata.companyname}}
-			</view>
-			<view style="margin: 20rpx 0 30rpx;" class="flex-between-center">
-				<view style="color: #999;font-size: 20rpx;">
-					{{companydata.orgname||''}}
+					<view class="list-item">
+					<view class="left">
+						<image :src="companydata.pic" mode="" ></image>
+						<!-- <image src="/static/imgs/title-icon.png" mode="" ></image> -->
+					</view>
+					<view class="right">
+						<view class="f1">{{companydata.f1}}</view>
+						<view class="f2">{{companydata.f2}}</view>
+						<Tag
+							v-for="(it,index) in companydata.f3" 
+							:status="it.key" 
+							:key="it.value"
+							:value="it.value" 
+						/>
+						<view class="f4-group">
+							<view class="f4">{{companydata.f4[0].value}}</view>
+							<view class="f4">{{companydata.f4[1].value}}</view>
+						</view>
+					</view>
 				</view>
-				<view style="color: #999;font-size: 20rpx;">
-					{{companydata.tel ||''}}
-				</view>
-			</view>
 			<view class="block-title">
 				身份
 			</view>
@@ -24,7 +33,7 @@
 						<block v-for="(item,index) in rolelist" :key="index">
 							<label @click="checkclick(index)" style="margin-right: 20rpx;">
 								<checkbox style="transform:scale(0.6);margin-right: -10rpx;" value="cb"
-									:checked="item.selectflg" color="#3d71e7" />{{item.name}}
+									:checked="item.selectflg" color="#3d71e7" />{{item.label}}
 							</label>
 						</block>
 					</checkbox-group>
@@ -43,14 +52,15 @@
 			</view>
 			<view v-if="phone" class="flex-align-center field-item">
 				<view class="field-title">
-					<text style="color: #FF0000;">*</text>手机
+					<text style="opacity: 0;">*</text>手机
 				</view>
-				<input disabled v-model="phone" class="field-input" style="flex: 1;" type="text"
-					placeholder="请输入添加人手机号">
+<!-- 				<input v-if="!disabledEdit" v-model="phone" class="field-input" style="flex: 1;" type="text"
+					placeholder="请输入添加人手机号"> -->
+				<view  class="displayEdit">{{phone}}</view>
 			</view>
 		</view>
 		<view class="foot flex">
-			<view class="cancel-btn">
+			<view class="cancel-btn" @click="back">
 				取消
 			</view>
 			<view @click="save" class="confirm-btn">
@@ -65,63 +75,79 @@
 		addAnthority,
 		getRoleNameByDeptidOrDutyid
 	} from "@/config/api.js"
+	import {
+		addCompanyCardInfo,
+		getCompanyPostList,
+		addNewBusinessPeople
+	} from "@/config/services.js"
+	import Tag from '@/components/Tag';
 	export default {
 		data() {
 			return {
 				companydata: null,
+				compantId: null,
 				username: '',
 				phone: '',
-				rolelist: [],
+				rolelist: [
+					{ label: '管理员', value: '1', selectflg: false },
+					{ label: '技术人员', value: '2', selectflg: false },
+					{ label: '法人', value: '3', selectflg: false },
+					{ label: '成员', value: '4', selectflg: false },
+				],
+				choosePostList: [],
 				roleidx: 0,
-				formid: ''
+				formid: '',
+				disabledEdit: false
 			}
 		},
 		onLoad(props) {
-			this.companydata = JSON.parse(decodeURIComponent(props.data))
-			this.formid = props.formid
-			this.phone = uni.getStorageSync("tel")
+			this.compantId = props.compantId
+			this.phone = uni.getStorageSync("phone")
 			this.username = uni.getStorageSync("name")
-			console.log(this.companydata)
-			this.getrolelist()
+			addCompanyCardInfo(props.compantId).then(res => 
+			{
+				this.companydata = res.data.data.companyVO.records[0];
+				console.log(res.data.data.companyVO.records[0])
+			}
+			)
+			getCompanyPostList().then(res => console.log('岗位信息',res.data))
 		},
-		components: {},
+		components: {
+			Tag
+		},
 		onShow() {},
 		methods: {
 			checkclick(idx) {
 				this.rolelist[idx].selectflg = !this.rolelist[idx].selectflg
+				this.choosePostList = this.rolelist.filter(item => item.selectflg===true).map(item => Number(item.value))
 			},
 			//确认加入
 			save() {
-				let selectedrole = []
-				this.rolelist.map(item => {
-					if (item.selectflg) {
-						selectedrole.push(item.id)
-					}
-				})
-				if (!selectedrole.length) {
+				if (!this.choosePostList.length) {
 					uni.showToast({
 						title: '至少选择一个身份',
 						icon: "none"
 					})
 					return
-				}
-				addAnthority({
-					id: this.companydata.id,
-					username: this.username,
-					orgcode: this.companydata.orgcode,
-					roleid: selectedrole
-				}).then(res => {
-					if (res.data.code == 0) {
-						uni.showToast({
-							title: '提交成功'
-						})
-						setTimeout(() => {
+				};
+				const requestParams = {
+					companyObjectId: this.compantId,
+					postList: this.choosePostList,
+					userName: this.username ,
+					phone: this.phone
+				};
+				
+				addNewBusinessPeople(requestParams)
+					.then(res => {
+						if(res.data.code) {
 							uni.reLaunch({
 								url: '/pages/home/index'
 							})
-						}, 2000)
-					}
-				})
+						}
+					})
+			},
+			back(){
+				uni.navigateBack()
 			},
 			//选择人员
 			roleselect(idx) {
@@ -253,6 +279,36 @@
 		.field-title {
 			font-size: 26rpx;
 			margin-right: 10rpx;
+		}
+		
+		.list-item {
+			background: #fff;
+			border-radius: 20rpx;
+			padding: 32rpx 0;
+			margin: 0 32rpx;
+			margin-bottom: 20rpx;
+			display: flex;
+		
+		.left {
+			width: 200rpx;
+			height: 200rpx;
+			border-radius: 10rpx;
+			border: 1px solid red;
+		}
+		.right{
+			padding-left: 20rpx;
+			
+			.f1 {
+				font-size: 32rpx;
+				font-weight: bold;
+			}
+			
+			.f2,
+			.f4 {
+				font-size: 24rpx;
+				color: rgba(154, 154, 154, 1);
+			}
+		}
 		}
 	}
 </style>

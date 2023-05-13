@@ -52,7 +52,9 @@
     "mp-weixin" : {
         "appid" : "wx3ce868d4eb45deab",
         "setting" : {
-            "urlCheck" : false
+            "urlCheck" : false,
+            "es6" : true,
+            "postcss" : true
         },
         "networkTimeout" : {
             "request" : 100000
@@ -72,7 +74,8 @@
         "usingComponents" : true
     },
     "mp-baidu" : {
-        "usingComponents" : true
+        "usingComponents" : true,
+        "appid" : ""
     },
     "mp-toutiao" : {
         "usingComponents" : true

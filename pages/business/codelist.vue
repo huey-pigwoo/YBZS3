@@ -5,40 +5,19 @@
 				<view class="flex-align-center" style="flex: 1;">
 					<view class="search-icon">
 					</view>
-					<input @input="getlist('refresh')" style="flex: 1;background: #fff;" v-model="searchvalue"
+					<input @input="getSearchList('refresh')" style="flex: 1;background: #fff;" v-model="searchvalue"
 						type="text" placeholder="请输入关键词">
 				</view>
 			</view>
 		</view>
+	
 		<view v-if="!simpleflg" class="list">
-			<view @click="itemclick(item)" v-for="(item,index) in datalist" :key="index" class="list_item">
-				<view class="flex-align-center">
-					<view class="animalcard-img">
-						<image v-if="item.pic" :src="item.pic"></image>
-						<image v-else src="/static/imgs/img-default.png"></image>
-					</view>
-					<view style="flex: 1;" class="">
-						<view class="flex-between-center">
-							<view class="animalcard-name">
-								{{item.f1||''}}
-							</view>
-							<view class="animalcard-type">
-								{{item.f2||''}}
-							</view>
-						</view>
-						<view class="sub-text">
-							{{item.f3||''}}
-						</view>
-						<view class="sub-text">
-							{{item.f4||''}}
-						</view>
-					</view>
-				</view>
-			</view>
+			<pureList v-if="!addAnimal" :listData="selectAnimalList" type="chooseAnimal"></pureList>
+			<pureList @click="getSelectAnimal" @getCardData="getSelectAnimal" v-else :listData="selectAnimalList" type="addAnimal"></pureList>
 		</view>
 		<view v-else class="list">
-			<view @click="itemclick(item)" v-for="(item,index) in datalist" :key="index" class="list_item_simple">
-				{{item.f1}}
+			<view @click="itemclick(item)" v-for="(item,index) in queryList" :key="item.objectId" class="list_item_simple">
+				{{item.animalName}}
 			</view>
 		</view>
 		<bottomline v-if="showBtLine && datalist.length > 4"></bottomline>
@@ -47,10 +26,11 @@
 
 <script>
 	import bottomline from '@/components/bottomline';
+	import pureList from "@/components/pureList/pureList.vue"
 	import {
 		getCodeTableByFormAndField
 	} from '@/config/api.js';
-	import request from '@/config/http.js'
+	import request from '@/config/https.js'
 	import {
 		getQueryVariable
 	} from '@/utils/util.js'
@@ -58,6 +38,10 @@
 	import {
 		mapState
 	} from "vuex"
+	import {
+		queryAnimalList,
+		selectAnimal
+	} from "@/config/businessRegister.js"
 	export default {
 		data() {
 			return {
@@ -77,25 +61,33 @@
 				formid: '',
 				sqlwhere: '',
 				backflg: false,
-				simpleflg: false
+				simpleflg: false,
+				addAnimal: false,
+				
+				queryList: [],
+				selectAnimalList: []
 			};
 		},
 		components: {
 			bottomline,
-			card1
+			card1,
+			pureList,
+			
 		},
-
 		computed: {
 			...mapState(['menu'])
 		},
 		onLoad(props) {
-			console.log(props)
+			console.log('选择动物',props)
 			this.yewuid = props.yewuid
 			if (props.simpleflg) {
 				this.simpleflg = true
 			}
 			if (props.relationid) {
 				this.sqlwhere = `t.relationid not in (${props.relationid})`
+			}
+			if (props.addAnimal) {
+				this.addAnimal = true
 			}
 			if (props.backflg) {
 				this.backflg = true
@@ -109,6 +101,7 @@
 			if (props.field) {
 				this.field = props.field
 			}
+			
 		},
 		onShow() {
 			this.getlist("refresh")
@@ -129,6 +122,10 @@
 			opensearch() {
 				this.searchActive = !this.searchActive
 			},
+			getSelectAnimal(data){
+				let eventChannel = this.getOpenerEventChannel()
+				eventChannel.emit('getchoose', data)
+			},
 			//点击确定模糊查询
 			searchconfirm() {
 				this.getlist('refresh')
@@ -137,29 +134,18 @@
 				if (refresh) {
 					this.pageindex = refresh ? 1 : this.pageindex
 				}
-				getCodeTableByFormAndField({
-					pageindex: this.pageindex,
-					pagesize: this.pagesize,
-					searchvalue: this.searchvalue,
-					formid: this.formid,
-					field: this.field,
-					sqlwhere: this.sqlwhere
-				}).then((res) => {
-					if (res.data.code == 0) {
-						res.data.data.data = res.data.data.data.map(item => {
-							item.checked = false
-							return item
-						})
-						if (refresh) {
-							this.datalist = [...res.data.data.data]
-						} else {
-							this.datalist = this.datalist.concat([...res.data.data.data])
-						}
-						if (this.pageindex * this.pagesize >= res.data.data.total) {
-							this.showBtLine = true
-						} else {
-							this.showBtLine = false
-						}
+				selectAnimal(this.pageindex).then(res => {
+					console.log(res.data.data.records)
+					this.selectAnimalList = res.data.data.records
+				})				
+			},
+			getSearchList(refresh){
+				if (refresh) {
+					this.pageindex = refresh ? 1 : this.pageindex
+				}
+				queryAnimalList(this.searchvalue).then(res => {
+					if(res.data.data.records.length > 0) {
+						this.queryList = res.data.data.records
 					}
 				})
 			},
@@ -200,8 +186,8 @@
 		}
 
 		.head {
-			padding: 20rpx;
 			position: fixed;
+			padding: 20rpx;
 			width: 100%;
 			height: 100rpx;
 			top: 0;

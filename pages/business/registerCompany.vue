@@ -1,5 +1,66 @@
 <template>
 	<view class="registerCompany container">
+		
+		<view class="form-itemblock">
+			<view class="block-title">
+				授予权限
+			</view>
+			<view class="field-item flex-baseline">
+				<view class="field-title">
+					<text class="field-musticon">*</text>
+					授权区域
+				</view>
+				<view class="">
+					<checkbox-group style="display: flex;flex-wrap: wrap;">
+						<block v-for="(item,index) in bisinfo" :key="index">
+							<label @click="checkclick(index)" style="margin-right: 20rpx;white-space: nowrap;">
+								<checkbox :disabled="disabled" style="transform:scale(0.6);margin-right: -10rpx;"
+									value="cb" :checked="item.selectflg" color="#3d71e7" />{{item.name}}
+							</label>
+						</block>
+					</checkbox-group>
+				</view>
+			</view>
+			<view class="field-item flex-align-center">
+				<view class="field-title">
+					<text class="field-musticon">*</text>
+					授权时间
+				</view>
+				<input @blur="judge" :disabled="disabled" v-model="unitinfo.deptname" class="field-input" type="text"
+					placeholder="请输入单位名称">
+			</view>
+			<view class="field-item flex-align-center">
+				<view class="field-title">
+					<text class="field-musticon">*</text>
+					授权业务
+				</view>
+				<view style="background-color: #F6F6F6;padding: 10rpx;" class="field-input">
+					<addresspicker v-if="!disabled" :orgname='unitinfo.orgname' @onChangeAddress='changeAddress'>
+					</addresspicker>
+					<view v-else class="">
+						{{unitinfo.orgname}}
+					</view>
+				</view>
+			</view>
+			<view class="field-item flex-align-center">
+				<view class="field-title">
+				</view>
+				<input :disabled="disabled" v-model="unitinfo.address" type="text" class="field-input"
+					placeholder="详细到街道、组、门牌号 ">
+			</view>
+			<view class="field-item flex-align-center">
+				<view class="field-title">
+					电话
+				</view>
+				<view class="flex-align-center" style="flex: 1;">
+					<input :disabled="disabled" v-model="unitinfo.areacode" placeholder="区号" type="text"
+						class="field-input" style="max-width: 100rpx;margin-right: 10rpx;">
+					<input :disabled="disabled" v-model="unitinfo.tel" placeholder="八位数座机号码" type="text"
+						class="field-input">
+				</view>
+			</view>
+		</view>
+		
 		<view class="form-itemblock">
 			<view class="block-title">
 				单位信息
@@ -59,6 +120,8 @@
 				</view>
 			</view>
 		</view>
+		
+
 		<view class="form-itemblock">
 			<view class="block-title">
 				管理员
@@ -68,7 +131,7 @@
 					<text class="field-musticon">*</text>
 					姓名
 				</view>
-				<input :disabled="disabled||flg==0" v-model="userinfo.name" placeholder="请输入姓名" class="field-input"
+				<input  v-model="userinfo.name" placeholder="请输入姓名" class="field-input"
 					type="text">
 			</view>
 			<view class="flex-align-center">
@@ -76,7 +139,7 @@
 					<text class="field-musticon">*</text>
 					手机
 				</view>
-				<input :disabled="disabled||flg==0" v-model="userinfo.tel" placeholder="请输入管理员手机号" class="field-input"
+				<input  v-model="userinfo.tel" placeholder="请输入管理员手机号" class="field-input"
 					type="number">
 			</view>
 		</view>

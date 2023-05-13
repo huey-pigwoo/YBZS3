@@ -53,9 +53,9 @@
 
 <script>
 	import {
-		getWxminiTel,
-		updateTel
-	} from '@/config/api.js'
+		getUserInfo,
+		getUserPostList
+	} from '@/config/services.js'
 	import Dialog from '@/components/dialog/index.vue'
 	export default {
 		data() {
@@ -71,6 +71,7 @@
 			if (props.phoneflg == 'true') {
 				this.phoneflg = true
 			}
+			
 			uni.login({
 				success(res) {
 					console.log(res)
@@ -88,31 +89,18 @@
 					this.dialogvisible = true
 					return
 				}
-				getWxminiTel({
-					code: val.detail.code
-				}).then((res) => {
-					if (res.data.code == 0) {
-						this.phone = res.data.data.phone_info.phoneNumber
-						uni.setStorageSync('phone', this.phone)
-						updateTel({
-							tel: this.phone
-						}).then((res1) => {
-							if (res1.data.code == 0) {
-								uni.setStorageSync('token', res1.data.data.loginsuccessinfo.token)
-								uni.setStorageSync('userid', res1.data.data.loginsuccessinfo.info.id)
-								if (res1.data.data.firstpageflg) {
-									uni.redirectTo({
-										url: '/pages/home/index'
-									})
-								} else {
-									uni.redirectTo({
-										url: '/pages/business/chooseCompany'
-									})
-								}
-							}
-						})
-					}
-				})
+				bindingStatus
+				const bindingStatus =  uni.getStorageSync('bindingStatus')
+				if(!bindingStatus) {
+					console.log('不是用户')
+					getUserInfo({code: val.detail.code}).then((res) => {
+						uni.setStorageSync('phone', res?.data?.data?.phone)
+						uni.setStorageSync('token', res?.data?.data?.token)
+						uni.redirectTo({url: '/pages/business/chooseCompany'})
+					})
+				} else {
+					console.log('是用户')
+				}
 			},
 			agree() {
 				uni.redirectTo({

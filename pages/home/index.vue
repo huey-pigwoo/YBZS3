@@ -1,10 +1,24 @@
 <template>
-	<view class="content">
-		<view class="banner" v-if="homedata.bannerinfo&&homedata.bannerinfo[0].value.length">
-			<swiper class="swiper" autoplay circular>
+	<view class="content" >
+		<button @click="commonAddCompany">注册用户加入单位</button>
+		<button @click="addAuthPage">添加授权单位</button>
+		
+		<view class="banner" 
+		>
+				<!-- v-if="homedata.bannerinfo&&homedata.bannerinfo[0].value.length" -->
+<!-- 			<swiper class="swiper" autoplay circular>
 				<swiper-item v-for="(item,index) in homedata.bannerinfo[0].value" :key="index">
 					<view class="swiper-item-imgbox">
 						<image v-if="item.pic" style="width: 100%;height: 100%;" :src="item.pic" mode='aspectFill'>
+						</image>
+						home.jpg
+					</view>
+				</swiper-item>
+			</swiper> -->
+			<swiper class="swiper" autoplay circular>
+				<swiper-item>
+					<view class="swiper-item-imgbox">
+						<image style="width: 100%;height: 100%;" src="/static/imgs/home.jpg" mode='aspectFill'>
 						</image>
 					</view>
 				</swiper-item>
@@ -20,7 +34,7 @@
 			<view @click="menuclick(item)" class="personinfo-item flex-column-center"
 				v-for="(item,index) in homedata.personinfo" :key="index">
 				<view class="personinfo-img">
-					<image v-if="item.pic" :src="item.pic">
+					<image v-if="item.pic" :src="item.pic" />
 				</view>
 				<view class="">
 					{{item.name}}
@@ -42,7 +56,7 @@
 			<view @click="menuclick(item)" class="bisopinfo-item flex-column-center"
 				v-for="(item,index) in homedata.bisopinfo" :key="index">
 				<view class="bisopinfo-img">
-					<image v-if="item.pic" :src="item.pic">
+					<image v-if="item.pic" :src="item.pic" />
 				</view>
 				<view class="">
 					{{item.name}}
@@ -100,7 +114,7 @@
 			<view @click="menuclick(item)" class="scienceinfo-item" v-for="(item,index) in homedata.scienceinfo"
 				:key="index">
 				<view class="scienceinfo-img">
-					<image v-if="item.pic" :src="item.pic">
+					<image v-if="item.pic" :src="item.pic" />
 				</view>
 				<view class="scienceinfo-title">
 					{{item.name}}
@@ -118,7 +132,18 @@
 				</view>
 			</view>
 		</view>
-	</view>
+		<view class="post-userBtn-box">
+			  <uni-data-select
+				:value="value"
+				:localdata="tempRoleList"
+				@change="postChange"
+				:clear="false"
+			  ></uni-data-select>
+			<userButtonGroup></userButtonGroup>
+			<businessButton></businessButton>
+			<overViewButton></overViewButton>
+		</view>
+		</view>
 </template>
 
 <script>
@@ -129,6 +154,12 @@
 		getPadCompanyAccount,
 		saveSelectRole
 	} from '@/config/api.js'
+	import { 
+		getPermisionBusiness,
+		getCurrentUserButton,
+		changePost,
+		getUserPostList,
+	} from '@/config/services.js'
 	import {
 		getLocation
 	} from "@/utils/location.js"
@@ -137,6 +168,9 @@
 	import homecard3 from '@/components/homecard/card3.vue'
 	import homecard4 from '@/components/homecard/card4.vue'
 	import progressbar from '@/components/cn-progressbar/cn-progressbar.vue'
+	import userButtonGroup from '@/components/userButtonGroup'
+	import businessButton from '@/components/businessButton/businessButton.vue'
+	import overViewButton from '@/components/overViewButton/overViewButton.vue'
 	export default {
 		data() {
 			return {
@@ -148,10 +182,14 @@
 					id: 1,
 					name: '收容救助'
 				}],
+				value: 0,
 				tabidx: 0,
 				rolename: '',
 				deptname: '',
-				rolelist: []
+				rolelist: [],
+				curretPost: '',
+				tempRoleList: [],
+				currentPost: null, // 当前岗位
 			};
 		},
 		onLoad() {
@@ -165,10 +203,74 @@
 			homecard1,
 			homecard2,
 			homecard3,
-			homecard4
+			homecard4,
+			userButtonGroup,
+			businessButton,
+			overViewButton
 		},
 		methods: {
+			commonAddCompany(){
+				uni.navigateTo({
+					url: '/pages/business/registerCompany'
+				})
+			},
+			addAuthPage(){
+				uni.navigateTo({
+					url: '/pages/user/addauthorization'
+				})
+			},
 			async init() {
+				console.log('进入首页,开始刷新')
+				getPermisionBusiness().then(res => {
+					console.log('获取授权业务',res.data.data)
+				})
+				const userPageConfig = await getCurrentUserButton().then(res => { return res.data.data })
+				uni.setStorageSync('userPageConfig',userPageConfig)
+				// 每次进首页获取一次角色列表 -- 判断本地是否有缓存
+				const roleList = uni.getStorageSync('postList')
+				if(roleList) {
+					const newRoleList = roleList.map(item => {return { value:item.postId, text:`${item.companyName} ${item.postName}`, postId: item.empPostObjectId, companyId: item.companyEntityId} })
+					this.tempRoleList = newRoleList;
+					console.log('newRoleList1',newRoleList,roleList)
+				} else {
+					getUserPostList().then(res => {
+						uni.setStorageSync('postList',res.data.data.data)
+						const newRoleList = res.data.data.data.map(item => {return { value:item.postId, text:`${item.companyName} ${item.postName}`, postId: item.empPostObjectId, companyId: item.companyEntityId} })
+						console.log('newRoleList2',newRoleList,res.data.data.data)
+						this.tempRoleList = newRoleList;
+					})
+				}
+		
+				// 获取当前本地存储的已选择岗位
+				const currentPost = uni.getStorageSync('currentPost')
+				const localRoleList = uni.getStorageSync('postList')
+				if(currentPost) {
+					// 如果有已经选择的岗位,遍历查看当前已选岗位是不是存在 postList 中
+					const newCurrentPost = this.tempRoleList.filter(item => item.value == currentPost)
+					if(newCurrentPost.length !== 0){
+						console.log('当前有对应岗位',newCurrentPost,currentPost)
+						this.value = currentPost
+						console.log('当前选中岗位的公司',localRoleList.filter(it => it.postId == currentPost))
+						const currentPostCompany = localRoleList.filter(it => it.postId == currentPost)
+						changePost(currentPostCompany[0].empPostObjectId).then(res => console.log(res.data.data))
+					} else {
+						this.value = this.tempRoleList[0].value;
+						changePost(this.tempRoleList[0].postId).then(res => console.log(res.data.data))
+					}
+				}
+				else {
+					console.log('本地没有岗位',this.tempRoleList)
+					this.value = this.tempRoleList[0].value
+					changePost(this.tempRoleList[0].postId).then((res)=> {
+					})
+					uni.setStorageSync('currentPost',this.tempRoleList[0].value)
+					uni.setStorageSync('currentCompany',{
+						companyName: localRoleList[0].companyName,
+						companyId: localRoleList[0].companyEntityId,
+						empObjectId: localRoleList[0].empObjectId,
+						})
+					console.log('this.tempRoleList',this.tempRoleList[0])
+				}
 				await getRoleByPersonId().then(res => {
 					if (res.data.code == 0) {
 						if (!res.data.data[0]) {
@@ -211,6 +313,17 @@
 					}
 				})
 			},
+			postChange(e){
+				this.value = e
+				uni.setStorageSync('currentPost',e)
+				const currentPostList = uni.getStorageSync('postList').filter(item => item.postId == e)
+				uni.setStorageSync('currentCompany',{
+					companyName: currentPostList[0].companyName,
+					companyId: currentPostList[0].companyEntityId,
+					empObjectId: currentPostList[0].empObjectId,
+					})
+				changePost(currentPostList[0].empPostObjectId).then(res => console.log(res.data.data))
+			},
 			rolechange(e) {
 				let data = this.rolelist[Number(e.detail.value)]
 				saveSelectRole({
@@ -238,6 +351,7 @@
 					}
 				})
 			},
+			
 			menuclick(data) {
 				getPadPageBisButtonAnthority({
 					bisid: data.id
@@ -273,7 +387,19 @@
 </script>
 <style lang="less">
 	page {
-		background: #f5f5f5;
+		min-height: 100vh;
+		background-color: #F2F3F8;
+	}
+	.page-container {
+		padding: 0 20rpx;
+	}
+	
+	.post-userBtn-box {
+		width: 100%;
+		position: absolute;
+		top: 260rpx;
+		padding: 0 20rpx;
+		margin-bottom: 50rpx;
 	}
 
 	.color-8 {
@@ -281,6 +407,17 @@
 	}
 
 	.content {
+		position: relative;
+		.uni-select {
+			border: 0;
+			.uni-select__input-text {
+				color: #fff;
+				text-align: end;
+			}
+			.uni-icons {
+				color: #fff !important;
+			}
+		}
 		.banner {
 			height: 400rpx;
 

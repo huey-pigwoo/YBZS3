@@ -18,7 +18,7 @@
 				<view class="field-title">
 					<text style="color: #FF0000;">*</text>证书名称
 				</view>
-				<input disabled class="field-input" v-model="list[0].name" style="flex: 1;" type="text"
+				<input  class="field-input" v-model="name" style="flex: 1;" type="text"
 					placeholder="请输入完整名称">
 			</view>
 			<view class="flex-align-center field-item">
@@ -51,6 +51,7 @@
 		getWaitingQualification,
 		saveUserQualification
 	} from '@/config/api.js'
+	import { getCertification } from '@/config/services.js'
 	import makemedia from "@/components/makemedia/index.vue"
 	export default {
 		data() {
@@ -59,15 +60,21 @@
 				activeidx: 0,
 				imglist: [],
 				level: 1,
-				number: ''
+				number: '',
+				name: ''
 			}
 		},
-		onLoad() {
-			getWaitingQualification().then(res => {
-				if (res.data.code == 0) {
-					this.list = res.data.data
-				}
-			})
+		onLoad(props) {
+			if(props.getCertification) {
+				getCertification(props.getCertification).then(res => {
+					console.log(res.data.data)
+					this.imglist = res.data.data.list.map(item => item.realUrl)
+				})
+			}
+			if(props.certificateName) this.name = props.certificateName
+			if(props.certificateRef) this.number = props.certificateRef
+			if(data.certificateLevel) this.level = data.certificateLevel
+
 		},
 		components: {
 			makemedia
@@ -80,6 +87,9 @@
 			//获取上传的图片
 			getimg(data) {
 				this.imglist = this.imglist.concat(data)
+			},
+			checkForm(){
+				console.log(this.list)
 			},
 			cancel() {
 				uni.navigateBack()
@@ -111,22 +121,22 @@
 					})
 					return
 				}
-				saveUserQualification({
-					pic: arr.join('|'),
-					name: this.list[0].name,
-					no: this.number,
-					typeid: 1,
-					level: 1
-				}).then(res => {
-					if (res.data.code == 0) {
-						uni.showToast({
-							title: '保存成功'
-						})
-						setTimeout(() => {
-							uni.navigateBack()
-						}, 1500)
-					}
-				})
+				// saveUserQualification({
+				// 	pic: arr.join('|'),
+				// 	name: this.list[0].name,
+				// 	no: this.number,
+				// 	typeid: 1,
+				// 	level: 1
+				// }).then(res => {
+				// 	if (res.data.code == 0) {
+				// 		uni.showToast({
+				// 			title: '保存成功'
+				// 		})
+				// 		setTimeout(() => {
+				// 			uni.navigateBack()
+				// 		}, 1500)
+				// 	}
+				// })
 			}
 		}
 	}

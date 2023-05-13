@@ -347,3 +347,8 @@
 	color: #000;
 	font-size: 24rpx
 }
+
+.displayEdit {
+	margin-left: 20rpx;
+	padding: 5rpx 10rpx;
+}

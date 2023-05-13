@@ -10,9 +10,13 @@
 </template>
 
 <script>
+	// import {
+	// 	getAddressList
+	// } from "../../config/api.js";
+	
 	import {
 		getAddressList
-	} from "../../config/api.js";
+	} from '@/config/services.js'
 	let firstCityItem = "四川省";
 	let firstCountyItem = "全市";
 	let firstTownItem = "全县";
@@ -29,13 +33,11 @@
 		props: ['orgname'],
 		mounted() {
 			this.region = this.orgname || "请选择区划"
-			getAddressList({
-				orgcode: this.orgcode || 51,
-				level: 3
-			}).then(res => {
+			getAddressList().then(res => {
 				if (res.data.code == 0) {
 					let datas = new Array();
 					datas.push(res.data.data);
+					console.log('获得到的地址节电树信息',res.data.data)
 					if (res.data.data.code && res.data.data.code.length == 4) {
 						firstCityItem = res.data.data.name;
 						firstCountyItem = "全县";
