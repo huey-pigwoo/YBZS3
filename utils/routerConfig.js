@@ -11,16 +11,16 @@ export const  userButtonConfig = {
 }
 
 export const businessButtonConfig = {
-	incomeCheckIn: '/pages/businessform/introduction',	// 引种登记
+	incomeCheckIn: '/pages/businessform/introduction',					// 引种登记
 	breedCheckIn: '/pages/business/codelist?type=chooseAnimal',			// 繁殖登记
-	deathCheckIn: '/pages/business/codelist',			// 死亡登记
-	escapeCheckIn: 'pages/business/codeliste',			// 逃逸登记
-	saleCheckIn: '/pages/business/codelist',			// 出售登记
-	durgCheckIn: '',									// 用药登记
-	acceptCheckIn: '',									// 接受确认
-	additionCheckIn: '',								// 补充登记
-	showCheckIn: '',									// 展演登记
-	restoreCheckIn: '/pages/businessform/release',		// 归还登记
+	deathCheckIn: '/pages/business/death',							// 死亡登记
+	escapeCheckIn: 'pages/business/codeliste',							// 逃逸登记
+	saleCheckIn: '/pages/business/codelist',							// 出售登记
+	durgCheckIn: '',													// 用药登记
+	acceptCheckIn: '',													// 接受确认
+	additionCheckIn: '',												// 补充登记
+	showCheckIn: '',													// 展演登记
+	restoreCheckIn: '/pages/businessform/release',						// 归还登记
 }
 
 // /pages/businessform/breed_fanyu.vue	// 繁殖登记
