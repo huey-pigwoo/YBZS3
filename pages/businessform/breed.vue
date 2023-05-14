@@ -98,7 +98,7 @@
 							// 	animalCard: JSON.parse(decodeURIComponent(props.animalData)),
 							// 	animalName: '',
 							// 	queryAniamlStatus: false,
-							// objectId: ''
+							// 	objectId: ''
 							// 	targetId: '', // 描述对象id 	(业务动物id、动物objectId)
 							// 	note: '', // 备注
 							// 	noteStatus: false,
@@ -167,7 +167,7 @@
 				this.onetimeid = props.onetimeid
 				this.getdetail()
 			}
-			this.getfield()
+			// this.getfield()	//-- ？？？
 		},
 		onShow() {
 			getLocation()
@@ -266,6 +266,7 @@
 					formattedInfoList: this.formattedInfoList.map(item => { return {
 						targetId: item.animalCard.id,
 						note: item.note,
+						objectId: result.objectId,
 						registrationInfo: item.registrationInfo
 					}})
 				}

@@ -14,9 +14,10 @@
 				pageType: null,
 			};
 		},
-		props: ['type','listData','chooseAnimal'],
+		props: ['type','listData','status'],
 		methods:{
 			itemclick(data) {
+				console.log('点击',this.status)
 				// uni.navigateTo({
 				// 	url: `/pages/standingbook/bis/animallist?id=${data.companyid}&type=${this.activityidx}&orgcode=${this.orgcode}&bisname=${data.title}`
 				// });
@@ -32,12 +33,43 @@
 						url: `/pages/businessDoc/index`
 					});
 				}
-				if(this.type === 'chooseAnimal') {
+				if(this.status === 'chooseAnimal') {
 					uni.navigateTo({
-						url: `/pages/businessform/breed?animalData=${encodeURIComponent(JSON.stringify(data))}&selectAnimal=true`
+						url: `/pages/businessform/${this.type}?animalData=${encodeURIComponent(JSON.stringify(data))}&selectAnimal=true`
 					});
 				}
-				if(this.type === 'addAnimal') {
+				// if(this.type === 'breed' && this.status === 'chooseAnimal') {
+				// 	uni.navigateTo({
+				// 		url: `/pages/businessform/breed?animalData=${encodeURIComponent(JSON.stringify(data))}&selectAnimal=true`
+				// 	});
+				// }
+				// if(this.type === 'death' && this.status === 'chooseAnimal') {
+				// 	uni.navigateTo({
+				// 		url: `/pages/businessform/death?animalData=${encodeURIComponent(JSON.stringify(data))}&selectAnimal=true`
+				// 	});
+				// }
+				// if(this.type === 'escape' && this.status === 'chooseAnimal') {
+				// 	uni.navigateTo({
+				// 		url: `/pages/businessform/escape?animalData=${encodeURIComponent(JSON.stringify(data))}&selectAnimal=true`
+				// 	});
+				// }
+				// if(this.type === 'sale' && this.status === 'chooseAnimal') {
+				// 	uni.navigateTo({
+				// 		url: `/pages/businessform/sale?animalData=${encodeURIComponent(JSON.stringify(data))}&selectAnimal=true`
+				// 	});
+				// }
+				// if(this.type === 'release' && this.status === 'chooseAnimal') {
+				// 	uni.navigateTo({
+				// 		url: `/pages/businessform/release?animalData=${encodeURIComponent(JSON.stringify(data))}&selectAnimal=true`
+				// 	});
+				// }
+				// if(this.type === 'drug' && this.status === 'chooseAnimal') {
+				// 	uni.navigateTo({
+				// 		url: `/pages/businessform/drug?animalData=${encodeURIComponent(JSON.stringify(data))}&selectAnimal=true`
+				// 	});
+				// }
+				
+				if(this.status === 'addAnimal') {
 					uni.navigateBack()
 				}
 				

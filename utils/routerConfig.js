@@ -11,32 +11,29 @@ export const  userButtonConfig = {
 }
 
 export const businessButtonConfig = {
-	incomeCheckIn: '/pages/businessform/introduction',					// 引种登记
-	breedCheckIn: '/pages/business/codelist?type=chooseAnimal',			// 繁殖登记
-	deathCheckIn: '/pages/business/death',							// 死亡登记
-	escapeCheckIn: 'pages/business/codeliste',							// 逃逸登记
-	saleCheckIn: '/pages/business/codelist',							// 出售登记
-	durgCheckIn: '',													// 用药登记
-	acceptCheckIn: '',													// 接受确认
-	additionCheckIn: '',												// 补充登记
-	showCheckIn: '',													// 展演登记
-	restoreCheckIn: '/pages/businessform/release',						// 归还登记
+	incomeCheckIn: '/pages/businessform/introduction',									// 引种登记
+	breedCheckIn: '/pages/business/codelist?pageType=breed&status=chooseAnimal',		// 繁殖登记
+	deathCheckIn: '/pages/business/codelist?pageType=death&status=chooseAnimal',		// 死亡登记
+	escapeCheckIn: '/pages/business/codelist?pageType=escape&status=chooseAnimal',		// 逃逸登记
+	saleCheckIn: '/pages/business/codelist?pageType=sale&status=chooseAnimal',			// 出售登记
+	durgCheckIn: '/pages/business/codelist?pageType=drug&status=chooseAnimal',																	// 用药登记
+	acceptCheckIn: '',																	// 接受确认
+	additionCheckIn: '',																// 补充登记
+	showCheckIn: '/pages/business/codelist?pageType=show&status=chooseAnimal',			// 展演登记
+	restoreCheckIn: '/pages/business/codelist?pageType=release&status=chooseAnimal',	// 归还登记
 }
 
-// /pages/businessform/breed_fanyu.vue	// 繁殖登记
-// /pages/businessform/breed			// 繁育登记
-// /pages/businessform/death_fanyu		// 死亡登记
-// /pages/businessform/death			// 死亡登记
-// /pages/businessform/escape			// 逃逸登记
-// /pages/businessform/introduction		// 引进登记
+
+// /pages/business/codelist?pageType=release&status=chooseAnimal'
+
+
+
 // /pages/businessform/quarantine		// 检疫登记
-// /pages/businessform/release			// 放归登记
 // /pages/businessform/rescue			// 救助登记
-// /pages/businessform/sale				// 销售登记
 // /pages/businessform/transfer			// 移交登记
 
 
-// - 接受	- 用药	- 补充	- 展演
+// - 接受	- 用药	- 补充	- 展演	- 放归申请	- 救助登记	- 移交登记
 
 
 

@@ -1,11 +1,11 @@
 <template>
 	<view class="userButton-container" >
 			<view class="userButton-item" 
-			  v-for="(item,index) in testButtonGroup" 
+			  v-for="(item,index) in buttonGroup" 
 			  :key="index" 
 			  @click="goPage(item.authHandleResult.haveAuth,item.componentId)"
 			  :style="{
-				  margin: `10rpx calc((100% - 100rpx * ${testButtonGroup.length}) / ${testButtonGroup.length} / 2)`
+				  margin: `10rpx calc((100% - 100rpx * ${buttonGroup.length}) / ${buttonGroup.length} / 2)`
 				  }"
 			>
 				<view :class="{'icon-box':true, 'active':!item.authHandleResult.haveAuth}">
@@ -24,7 +24,7 @@
 		data() {
 			return {
 				// userButtonGroup: uni.getStorageSync('userPageConfig').filter(item => allUserButton.map(item => item.componentId).includes(item.componentId)),
-				testButtonGroup: [
+				buttonGroup: [
 					{ componentName: '业务记录', componentId: 'businessNode', authHandleResult: {haveAuth: true, authErrorMsg: null}},
 					{ componentName: '人员管理', componentId: 'personManage', authHandleResult: {haveAuth: true, authErrorMsg: null}},
 					{ componentName: '个人中心', componentId: 'personCenter', authHandleResult: {haveAuth: true, authErrorMsg: null}},
@@ -34,7 +34,7 @@
 			};
 		},
 		onReady(){
-			this.testButtonGroup = this.testButtonGroup.map(item => { return {
+			this.buttonGroup = this.buttonGroup.map(item => { return {
 				componentName: item.componentName,
 				componentId: item.componentId,
 				icon: iconMap[item.componentId],
@@ -46,7 +46,7 @@
 		},
 		methods: {
 			getUserButton(){
-				console.log(this.testButtonGroup)
+				console.log(this.buttonGroup)
 			},
 			// 点击按钮跳转到对应的页面
 			goPage(auth,btnName) {

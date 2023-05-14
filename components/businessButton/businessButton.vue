@@ -21,17 +21,20 @@
 		data() {
 			return {
 				businessButtonGroup: [
-					{ componentName: '引种登记', componentId: 'incomeCheckIn', authHandleResult: {haveAuth: true, authErrorMsg: null}},
-					{ componentName: '繁殖登记', componentId: 'breedCheckIn', authHandleResult: {haveAuth: true, authErrorMsg: null}},
-					{ componentName: '死亡登记', componentId: 'deathCheckIn', authHandleResult: {haveAuth: true, authErrorMsg: null}},
-					{ componentName: '逃逸登记', componentId: 'escapeCheckIn', authHandleResult: {haveAuth: true, authErrorMsg: null}},
-					{ componentName: '出售登记', componentId: 'saleCheckIn', authHandleResult: {haveAuth: true, authErrorMsg: null}},
-					{ componentName: '用药登记', componentId: 'durgCheckIn', authHandleResult: {haveAuth: true, authErrorMsg: null}},
-					{ componentName: '接受确认', componentId: 'acceptCheckIn', authHandleResult: {haveAuth: true, authErrorMsg: null}},
-					{ componentName: '补充登记', componentId: 'additionCheckIn', authHandleResult: {haveAuth: true, authErrorMsg: null}},
-					{ componentName: '展演登记', componentId: 'showCheckIn', authHandleResult: {haveAuth: true, authErrorMsg: null}},
-					{ componentName: '归还登记', componentId: 'restoreCheckIn', authHandleResult: {haveAuth: true, authErrorMsg: null}},
-				],
+					{ componentName: '引种登记', componentId: 'incomeCheckIn' , authHandleResult: {haveAuth: false, authErrorMsg: null}},
+					{ componentName: '繁殖登记', componentId: 'breedCheckIn' , authHandleResult: {haveAuth: false, authErrorMsg: null}},
+					{ componentName: '死亡登记', componentId: 'deathCheckIn' , authHandleResult: {haveAuth: false, authErrorMsg: null}},
+					{ componentName: '逃逸登记', componentId: 'escapeCheckIn' , authHandleResult: {haveAuth: false, authErrorMsg: null}},
+					{ componentName: '出售登记', componentId: 'saleCheckIn' , authHandleResult: {haveAuth: false, authErrorMsg: null}},
+					{ componentName: '用药登记', componentId: 'durgCheckIn' , authHandleResult: {haveAuth: false, authErrorMsg: null}},
+					{ componentName: '接受确认', componentId: 'acceptCheckIn' , authHandleResult: {haveAuth: true, authErrorMsg: null}},
+					// { componentName: '补充登记', componentId: 'additionCheckIn' , authHandleResult: {haveAuth: true, authErrorMsg: null}},
+					{ componentName: '展演登记', componentId: 'showCheckIn' , authHandleResult: {haveAuth: false, authErrorMsg: null}},
+					{ componentName: '归还登记', componentId: 'restoreCheckIn' , authHandleResult: {haveAuth: true, authErrorMsg: null}},
+					{ componentName: '放归登记', componentId: 'releaseCheckIn' , authHandleResult: {haveAuth: false, authErrorMsg: null}},
+					{ componentName: '救助登记', componentId: 'saveCheckIn' , authHandleResult: {haveAuth: true, authErrorMsg: null}},
+					{ componentName: '移交登记', componentId: 'transferCheckIn' , authHandleResult: {haveAuth: true, authErrorMsg: null}},
+				]	
 			};
 		},
 		onReady(){

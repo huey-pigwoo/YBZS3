@@ -13,7 +13,7 @@
 		<view class="" v-for="(item,index) in formattedInfoList" :key="index">
 			<view class="form-itemblock">
 				<view class="block-title">
-					放归动物
+					用药动物
 				</view>
 				<view  @click="deleteanimal(index)" class="block-delete">
 				</view>
@@ -22,12 +22,17 @@
 			
 			<view class="form-itemblock" >
 				<view class="block-title">
-					放归记录
+					用药记录
 				</view>
 				<view class="">
+					<view class="numinfo flex" style="margin-bottom: 20rpx">
+						<text>药物</text>
+						<input placeholder="请填写药物名称" style="flex: 1;" class="field-input" v-model="item.registrationInfo.drugInfoList[0].drugName" type="text">
+					</view>
 					<view class="numinfo flex">
-						<text>数量</text>
-						<input type="number" class="num-input" v-model="item.registrationInfo.releaseNum" />
+						<text>剂量</text>
+						<input type="number" placeholder="请输入剂量" class="num-input" v-model="item.registrationInfo.drugInfoList[0].dosage" />
+						<text>ml</text>
 					</view>
 					<view @click="showtips(index)" class="tips">
 						{{`请输入备注信息 >`}}
@@ -67,7 +72,7 @@
 
 <script>
 	import {
-		sendReleaseForm,
+		sendDrugForm,
 		getRegistrationDetail,
 		auditBusiness
 	} from '@/config/businessRegister.js'
@@ -103,7 +108,10 @@
 							// 	note: '', // 备注
 							// 	noteStatus: false,
 							// 	registrationInfo: {
-							// 		releaseNum: '', // 繁殖数量
+							//		drugInfoList: [{
+							//		  "drugName":  "药物名称",
+							//	      "dosage": "",  // 药物剂量
+							// }]
 							// 	},
 							// }
 						],
@@ -128,7 +136,10 @@
 						note: result.note, // 备注
 						noteStatus: false,
 						registrationInfo: {
-							releaseNum: result.registrationInfo.releaseNum, // 繁殖数量
+							drugInfoList: [{
+							    drugName: result.registrationInfo.drugInfoList[0].drugName, // "药物名称",
+							    dosage: result.registrationInfo.drugInfoList[0].dosage,  // 药物剂量
+							}]
 						}
 					})
 				})
@@ -159,7 +170,10 @@
 					note: '', // 备注
 					noteStatus: false,
 					registrationInfo: {
-						releaseNum: '', // 繁殖数量
+						drugInfoList: [{ // 药物列表
+								drugName: "",
+								dosage: "",  // 药物剂量
+						   }]
 					}
 				})
 			}
@@ -210,7 +224,10 @@
 								note: '', // 备注
 								noteStatus: false,
 								registrationInfo: {
-									releaseNum: '', // 繁殖数量
+									drugInfoList: [{ // 药物列表
+											drugName: "",
+											dosage: "",  // 药物剂量
+									   }]
 								}
 							})
 						}
@@ -284,7 +301,7 @@
 						}
 					})
 				} else {
-					sendReleaseForm(params).then(res => {
+					sendDrugForm(params).then(res => {
 						if (res.data.code == 0) {
 							uni.showToast({
 								title: '保存成功'

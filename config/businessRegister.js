@@ -94,7 +94,7 @@ export const getRegistrationDetail = (businessId) => {
 	})
 }
 
-// 选择动物 
+// 选择业务动物 
 /**
  * @param {animalNameFilter}  {
 	 key: animalName,
@@ -199,15 +199,6 @@ export const sendSaleForm = (data) => {
 	})
 }
 
-// 用药登记
-export const sendDrugForm = (data) => {
-	return request('/api/object/action','POST',{
-		   "objectId": "DrugRegistration",
-		   "actionType": "Commit",
-		   param: data
-	})
-}
-
 
 // 展演登记
 export const sendExhibitionForm = (data) => {
@@ -227,8 +218,32 @@ export const sendReturnForm = (data) => {
 	})
 }
 
+// 死亡登记
+export const sendDeathForm = (data) => {
+	return request('/api/object/action','POST',{
+		"objectId": "DeadRegistration",
+		"actionType": "Commit",
+		param: data
+	})
+}
 
+// 放归登记
+export const sendReleaseForm = (data) => {
+	return request('/api/object/action','POST',{
+		"objectId": "ReleaseRegistration",
+		"actionType": "Commit",
+		param: data
+	})
+}
 
+// 用药记录
+export const sendDrugForm = (data) => {
+	return request('/api/object/action','POST',{
+		"objectId": "DrugRegistration",
+		"actionType": "Commit",
+		param: data
+	})
+}
 
 
 // 确认业务登记

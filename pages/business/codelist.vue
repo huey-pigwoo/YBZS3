@@ -12,8 +12,8 @@
 		</view>
 	
 		<view v-if="!simpleflg" class="list">
-			<pureList v-if="!addAnimal" :listData="selectAnimalList" type="chooseAnimal"></pureList>
-			<pureList @click="getSelectAnimal" @getCardData="getSelectAnimal" v-else :listData="selectAnimalList" type="addAnimal"></pureList>
+			<pureList v-if="!addAnimal" :listData="selectAnimalList" :type="pageType" :status="status"></pureList>
+			<pureList @click="getSelectAnimal" @getCardData="getSelectAnimal" v-else :listData="selectAnimalList" status="addAnimal"></pureList>
 		</view>
 		<view v-else class="list">
 			<view @click="itemclick(item)" v-for="(item,index) in queryList" :key="item.objectId" class="list_item_simple">
@@ -64,8 +64,12 @@
 				simpleflg: false,
 				addAnimal: false,
 				
+				pageType: '',
+				status: '',
 				queryList: [],
-				selectAnimalList: []
+				selectAnimalList: [],
+				
+				
 			};
 		},
 		components: {
@@ -80,6 +84,14 @@
 		onLoad(props) {
 			console.log('选择动物',props)
 			this.yewuid = props.yewuid
+			if(props.pageType){
+				console.log('现在是由那个页面进来的',props.pageType )
+				this.pageType = props.pageType
+			}
+			if(props.status){
+				console.log('现在是是不是选择动物',props.status )
+				this.status = props.status
+			}
 			if (props.simpleflg) {
 				this.simpleflg = true
 			}
@@ -134,7 +146,11 @@
 				if (refresh) {
 					this.pageindex = refresh ? 1 : this.pageindex
 				}
-				selectAnimal(this.pageindex).then(res => {
+				selectAnimal(this.pageindex,{
+				   key:"registrationStatus",
+				   operator: "EQ",
+				   values: ["AUDIT_PASS"]
+				}).then(res => {
 					console.log(res.data.data.records)
 					this.selectAnimalList = res.data.data.records
 				})				
@@ -150,6 +166,7 @@
 				})
 			},
 			itemclick(data) {
+				
 				if (this.backflg) {
 					let eventChannel = this.getOpenerEventChannel()
 					eventChannel.emit('getchoose', data)
@@ -165,6 +182,14 @@
 						url: `${url}?selectdata=${encodeURIComponent(JSON.stringify(data))}`
 					})
 				}
+				
+		// -------- S ----------------------------------------
+		
+		
+				
+				
+				
+		// -------- E ----------------------------------------
 			}
 		}
 	};

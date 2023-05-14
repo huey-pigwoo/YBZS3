@@ -25,6 +25,7 @@
 	} from '@/config/businessRegister.js'
 	import pureList from '@/components/pureList/pureList.vue'
 	import addresspicker from '@/components/pick-address/index.vue';
+	import { pageConfig } from '@/utils/pageButtonConfig.js'
 	import {
 		isEmpty,
 		debounce,
@@ -37,18 +38,20 @@
 				pageindex: 1,
 				pagesize: 20,
 				searchvalue: '',
-				pageConfig: {
-					INTRODUCTION_REGISTRATION: '/pages/businessform/introduction',	// 引种登记
-					REPRODUCTION_REGISTRATION: '/pages/businessform/breed',			// 繁殖登记
-					deathCheckIn: '/pages/business/codelist',			// 死亡登记
-					escapeCheckIn: 'pages/business/codeliste',			// 逃逸登记
-					saleCheckIn: '/pages/business/codelist',			// 出售登记
-					durgCheckIn: '',									// 用药登记
-					acceptCheckIn: '',									// 接受确认
-					additionCheckIn: '',								// 补充登记
-					showCheckIn: '',									// 展演登记
-					restoreCheckIn: '/pages/businessform/release',		// 归还登记
-				}
+				// pageConfig: {
+				// 	INTRODUCTION_REGISTRATION: '/pages/businessform/introduction',	// 引种登记
+				// 	REPRODUCTION_REGISTRATION: '/pages/businessform/breed',			// 繁殖登记
+				// 	DEAD_REGISTRATION: '/pages/businessform/death',			// 死亡登记
+				// 	ESCAPE_REGISTRATION: '/pages/businessform/escape',			// 逃逸登记
+				// 	SALE_REGISTRATION: '/pages/businessform/sale',			// 出售登记
+				// 	RELEASE_REGISTRATION: '/pages/businessform/release',	// 放归登记
+				// 	DRUG_REGISTRATION: '/pages/businessform/drug',			// 用药登记	
+				// 	durgCheckIn: '',									// 用药登记
+				// 	acceptCheckIn: '',									// 接受确认
+				// 	additionCheckIn: '',								// 补充登记
+				// 	EXHIBITION_REGISTRATION: '/pages/businessform/show',			// 展演登记
+				// 	restoreCheckIn: '/pages/businessform/release',		// 归还登记
+				// }
 			}
 		},
 		components: {
@@ -60,20 +63,11 @@
 		},
 		methods: {
 			getCardData(data){
-				let url
-				if(data.origin.entityType === 'INTRODUCTION_REGISTRATION') {
-					console.log('是引种登记',this.pageConfig[data.origin.entityType])
-					url = this.pageConfig[data.origin.entityType]
-					uni.navigateTo({
-						url: `${url}?businessId=${data.id}&business=true`
-					})
-				}
-				if(data.origin.entityType === 'REPRODUCTION_REGISTRATION') {
-					url = this.pageConfig[data.origin.entityType]
-					uni.navigateTo({
-						url: `${url}?businessId=${data.id}&business=true`
-					})
-				}
+				let url = pageConfig[data.origin.entityType]
+				uni.navigateTo({
+					url: `${url}?businessId=${data.id}&business=true`
+				})
+				console.log(data)
 			},
 			changeAddress(orgname, orgcode) {
 				this.orgcode = orgcode
